@@ -20,6 +20,7 @@ export default {
         grid-gap: 5px;
         padding-right: 5px;
         padding-left: 5px;
+        min-height: calc(100vh - 100px);
     }
     div {
         grid-column: 2 / 12;

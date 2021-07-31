@@ -4,16 +4,18 @@
   <main-content>
     <router-view></router-view>
   </main-content>
+  <footer-app></footer-app>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue';
 import SideBar from './components/SideBar.vue';
 import MainContent from './components/MainContent.vue';
+import FooterApp from './components/FooterApp.vue';
 
 export default {
   components: { 
-    NavBar, SideBar, MainContent 
+    NavBar, SideBar, MainContent, FooterApp
   },
   data() {
     return {

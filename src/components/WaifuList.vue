@@ -13,7 +13,7 @@ export default {
         Gallery
     },
     props: {
-        waifuList: Object
+        waifuList: Array
     }
 }
 </script>

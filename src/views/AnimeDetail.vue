@@ -1,7 +1,14 @@
 <template>
     <loading v-if="loading" />
     <h1 v-else-if="error" > {{error}} </h1>
-    <anime-infor v-else :anime="anime" />
+    <template v-else>
+        <anime-infor :anime="anime" />
+        <div class="gallery-header">
+            <h2 class="gallery-title">Waifu</h2>
+        </div>
+        <waifu-list :waifuList="waifuList" />
+    </template>
+
 </template>
 
 <script>
@@ -10,10 +17,13 @@ import axios from 'axios';
 
 import AnimeInfor from '../components/AnimeInfor.vue';
 import Loading from '../components/Loading.vue';
+import WaifuList from '../components/WaifuList.vue';
+
 export default {
     components: {
         AnimeInfor,
-        Loading
+        Loading,
+        WaifuList
     },
     props: ['id'],
     setup(props) {
@@ -38,6 +48,14 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+    .gallery-header {
+        border-bottom: #333 2px solid;
+    }
+    .gallery-title {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 600;
+        color: #333;
+    }
 </style>
