@@ -4,10 +4,10 @@
         <button @click="clickItem"> {{item.name}}
             <i :class="['fas fa-chevron-right', active ? 'active' : '']"></i>
         </button>
-        <submenu :active="active" :subItems="item.submenu" />
+        <submenu @click-link="clickLink" :active="active" :subItems="item.submenu" />
       </template>
       <template v-else>
-        <router-link :to="item.path"> {{item.name}} </router-link>
+        <router-link @click="linkActive" :to="item.path"> {{item.name}} </router-link>
       </template>
     </li>
 </template>
@@ -29,6 +29,13 @@ export default {
     methods: {
         clickItem() {
             this.active = !this.active;
+        },
+        linkActive() {
+            this.$emit('link-active');
+        },
+        clickLink() {
+            this.active = !this.active
+            this.$emit('link-active');
         }
     }
 }

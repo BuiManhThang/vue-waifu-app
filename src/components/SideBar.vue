@@ -1,13 +1,14 @@
 <template>
   <div :class="['side-bar', activeSidebar ? 'active' : '']">
     <ul class="side-bar__list">
-      <side-bar-item v-for="item in items" :key="item.name" :item="item" ></side-bar-item>
+      <side-bar-item @link-active="$emit('link-active')" v-for="item in items" :key="item.name" :item="item" ></side-bar-item>
     </ul>
   </div>
 </template>
 
 <script>
 import SideBarItem from './SideBarItem.vue';
+import axios from 'axios';
 
 export default {
   props: {
@@ -20,22 +21,20 @@ export default {
     return {
       items: [
         {name: 'Home', path: '/'},
-        {name: 'Genre', submenu: [
-          {name: 'Yandere'},
-          {name: 'Tsundere '},
-          {name: 'Deredere'},
-          {name: 'Kamidere'},
-        ]},
+        {name: 'Genre', submenu: []},
         {name: 'Anime', path: '/anime'},
       ],
-      sideBar: false,
     };
   },
-  methods: {
-    clickGenre() {
-      this.sideBar = !this.sideBar;
-    },
-  },
+  mounted() {
+    axios.get('http://localhost:3000/genre/list')
+    .then(res => {
+      this.items[1].submenu = res.data;
+    })
+    .catch((err) => {
+      this.items[1].submenu = [{name: err.message}];
+    })
+  }
 };
 </script>
 <style scoped >

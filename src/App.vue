@@ -1,6 +1,6 @@
 <template>
   <nav-bar :activeSidebar="activeSideBar" @active-sidebar="activeSideBar = !activeSideBar" />
-  <side-bar :activeSidebar="activeSideBar"/>
+  <side-bar @link-active="activeSideBar = !activeSideBar" :activeSidebar="activeSideBar"/>
   <main-content>
     <router-view></router-view>
   </main-content>
@@ -40,5 +40,14 @@ export default {
   font-family: 'Roboto', sans-serif;
   background-color: #eee;
   min-height: 100vh;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #000;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(95, 94, 94);
+  width: 100%;
+  border-radius: 5px;
 }
 </style>

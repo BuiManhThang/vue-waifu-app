@@ -1,7 +1,7 @@
 <template>
   <ul :class="[active ? 'active' : '']" :style="styleSubmenu" >
-      <li v-for="item in subItems" :key="item.name" >
-          <a href="#"> {{item.name}} </a>
+      <li v-for="item in subItems" :key="item._id" >
+          <router-link @click="$emit('click-link')" :to="{name: 'GenreDetail', params: {id: item._id}}"> {{item.name}} </router-link>
       </li>
   </ul>
 </template>

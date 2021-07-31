@@ -9,6 +9,9 @@
                 <p><strong>In Anime: </strong> 
                     <router-link :to="{name: 'AnimeDetail', params: {id: waifuInfor.anime._id}}" > {{waifuInfor.anime.name}} </router-link>
                 </p>
+                <p v-if="waifuInfor.genre" ><strong>Tag: </strong>
+                    <router-link v-for="(tag, index) in waifuInfor.genre" :key="tag.id" :to="{name: 'GenreDetail', params: {id: tag._id}}" > #{{tag.name}} <span v-if="index < waifuInfor.genre.length - 1" >,</span> </router-link>
+                </p>
             </div>
         </div>
     </div>
