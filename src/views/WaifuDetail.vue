@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import {useRoute} from 'vue-router';
+import {onBeforeRouteUpdate, useRoute} from 'vue-router';
 import axios from 'axios';
 import { ref } from '@vue/reactivity';
 
@@ -26,6 +26,18 @@ export default {
             loading.value = false;
         })
         .catch(err => console.log(err));
+
+        onBeforeRouteUpdate((to, from, next) => {
+            if(to.name === 'WaifuDetail') {
+                axios.get(`http://localhost:3000/waifu/${to.params.id}`)
+                .then(data => {
+                    waifuInfor.value = data.data;
+                    loading.value = false;
+                })
+                .catch(err => console.log(err));
+            }
+            next();
+        })
 
         return {waifuInfor, loading};
     }

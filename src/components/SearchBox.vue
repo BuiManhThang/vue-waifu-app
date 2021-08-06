@@ -1,29 +1,72 @@
 <template>
-<div>
-  <form :class="[searchActive ? 'active' : '']" >
-    <input type="text" autocomplete="false" placeholder="Search..." />
-    <button class="btn btn-primary">Search</button>
-  </form>
-  <button @click="searchActive = !searchActive" :class="['search', searchActive ? 'active' : '']" >
-    <i class="fas fa-search"></i>
-  </button>
+<div class="search-box">
+  <div :class="['search-container', searchActive ? 'active' : '']">
+    <div>
+      <form>
+        <input type="text" autocomplete="false" placeholder="Search..." v-model="text"/>
+        <button class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    <search-field @active-link="activeLinkHandler" :loading="loading" :error="error" :waifuList="listWaifu" />
+  </div>
+      <button @click="searchActive = !searchActive" :class="['search', searchActive ? 'active' : '']" >
+        <i class="fas fa-search"></i>
+      </button>
 </div>
 </template>
 
 <script>
+import axios from 'axios';
+import SearchField from './SearchField.vue';
+
 export default {
+  components: {
+    SearchField
+  },
   data() {
     return {
-      searchActive: false
+      searchActive: false,
+      text: '',
+      listWaifu: [],
+      loading: false,
+      error: null
+    }
+  },
+  watch: {
+    text(newText) {
+      if(newText === '') {
+        this.listWaifu = [];
+        return;
+      }
+      this.loading = true;
+      axios.get(`http://localhost:3000/search`, {params: {waifu: newText}})
+      .then(res => {
+        this.listWaifu = res.data;
+        this.loading = false;
+      })
+      .catch((err) => {
+        this.loading = false;
+        this.error = err;
+      })
+    }
+  },
+  methods: {
+    activeLinkHandler() {
+      this.searchActive = !this.searchActive;
+      this.text = '';
+      this.listWaifu = [];
     }
   }
 };
 </script>
 
 <style scoped>
-div {
+.search-box {
   flex-grow: 1;
   margin: 0 100px;
+}
+.search-container {
+  position: relative;
 }
 form {
   display: flex;
@@ -53,17 +96,17 @@ input {
 }
 
 @media screen and (max-width: 767px) {
-  div {
+  .search-box {
     margin: 0 50px;
   }
 }
 
 @media screen and (max-width: 575px) {
-  div  {
+  .search-box  {
     flex-grow: unset;
     margin: 0;
   }
-  form {
+  .search-container {
     position: fixed;
     top: -100%;
     left: 50%;
@@ -75,7 +118,7 @@ input {
   .search {
     display: block;
   }
-  form.active {
+  .search-container.active {
     top: 30px;
   }
   .search.active {
