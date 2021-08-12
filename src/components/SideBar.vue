@@ -8,7 +8,8 @@
 
 <script>
 import SideBarItem from './SideBarItem.vue';
-import axios from 'axios';
+import { computed, onMounted, watchEffect } from '@vue/runtime-core';
+import { useStore } from 'vuex';
 
 export default {
   props: {
@@ -17,24 +18,45 @@ export default {
   components: {
     SideBarItem
   },
-  data() {
-    return {
-      items: [
-        {name: 'Home', path: '/'},
-        {name: 'Genre', submenu: []},
-        {name: 'Anime', path: '/anime'},
-      ],
-    };
-  },
-  mounted() {
-    axios.get('http://localhost:3000/genre/list')
-    .then(res => {
-      this.items[1].submenu = res.data;
+  setup() {
+    const store = useStore();
+    
+    const items = computed(() => {
+      return store.state.items;
     })
-    .catch((err) => {
-      this.items[1].submenu = [{name: err.message}];
+
+    const user = computed(() => {
+      return store.state.user;
     })
+
+    watchEffect(() => {
+      if(!store.state.user) {
+        store.dispatch('fetchSideBarUser');
+      }
+      else {
+        if(store.state.user.role === 'user') {
+          store.dispatch('fetchSideBarUser')
+        }
+        else {
+          store.commit('setSideBarAdmin')
+        }
+      }
+    })
+
+    onMounted(() => {
+      if(!user)
+        store.dispatch('fetchSideBarUser');
+      else {
+        if(user.role === 'user')
+          store.dispatch('fetchSideBarUser')
+        else
+          store.commit('setSideBarAdmin')
+      }
+    })
+
+    return {items};
   }
+  
 };
 </script>
 <style scoped >

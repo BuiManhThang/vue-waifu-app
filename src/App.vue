@@ -12,25 +12,40 @@ import NavBar from './components/NavBar.vue';
 import SideBar from './components/SideBar.vue';
 import MainContent from './components/MainContent.vue';
 import FooterApp from './components/FooterApp.vue';
+import { ref } from '@vue/reactivity';
+import { watch, watchEffect } from '@vue/runtime-core';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
 export default {
   components: { 
     NavBar, SideBar, MainContent, FooterApp
   },
-  data() {
-    return {
-      activeSideBar: false
-    }
-  },
-  watch: {
-    activeSideBar() {
-      if(this.activeSideBar) {
+  setup() {
+    const store = useStore();
+    const activeSideBar = ref(false);
+    const route = useRoute();
+    watch(activeSideBar, () => {
+      if(activeSideBar.value === true) {
         document.querySelector('body').style.overflow = 'hidden';
       } else {
         document.querySelector('body').style.overflow = 'auto';
       }
+    })
+
+    store.dispatch('fetchUser');
+
+    watchEffect(() => {
+      if(route.path) {
+        store.dispatch('fetchUser');
+      } 
+    })
+
+    return {
+      activeSideBar
     }
-  }
+  },
+  
 }
 </script>
 

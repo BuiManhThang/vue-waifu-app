@@ -1,6 +1,6 @@
 <template>
     <loading v-if="loading" />
-    <waifu-infor v-else :waifuInfor="waifuInfor" />
+    <waifu-infor v-else :waifuInfor="waifuInfor" @like="handlLike" />
 </template>
 
 <script>
@@ -37,9 +37,18 @@ export default {
                 .catch(err => console.log(err));
             }
             next();
-        })
+        });
 
-        return {waifuInfor, loading};
+        const handlLike = () => {
+            axios.get(`http://localhost:3000/waifu/${route.params.id}`)
+            .then(data => {
+                waifuInfor.value = data.data;
+                loading.value = false;
+            })
+            .catch(err => console.log(err));
+        }
+
+        return {waifuInfor, loading, handlLike};
     }
 }
 </script>

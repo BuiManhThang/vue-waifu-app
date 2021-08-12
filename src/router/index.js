@@ -4,6 +4,9 @@ import Anime from '../views/Anime.vue';
 import WaifuDetail from '../views/WaifuDetail.vue';
 import AnimeDetail from '../views/AnimeDetail.vue';
 import GenreDetail from '../views/GenreDetail.vue';
+import Register from '../views/Register.vue';
+import LogIn from '../views/LogIn.vue';
+import Infor from '../views/Infor.vue';
 const routes = [
   {
     name: 'Home',
@@ -30,6 +33,21 @@ const routes = [
     name: 'GenreDetail',
     path: '/genre/:id',
     component: GenreDetail
+  },
+  {
+    name: 'Register',
+    path: '/register',
+    component: Register
+  },
+  {
+    name: 'LogIn',
+    path: '/login',
+    component: LogIn
+  },
+  {
+    name: 'Infor',
+    path: '/user/infor',
+    component: Infor
   }
 ]
 
