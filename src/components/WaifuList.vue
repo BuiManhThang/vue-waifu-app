@@ -4,6 +4,7 @@
         <select name="sort" id="sort" class="btn btn-primary" :value="sortBy" @change="$emit('update:sortBy', $event.target.value)">
             <option value="name">Name</option>
             <option value="birthday">Birthday</option>
+            <option value="like">Like</option>
         </select>
     </div>
   <gallery>

@@ -5,11 +5,9 @@
       <router-link :to="{name: 'WaifuDetail', params: {id: waifu._id}}"> {{waifu.name}} </router-link>
       <span class="item__like">Likes: {{waifu.user.length}} </span>
       <div class="item__group-btn">
-          <modal-button :style="buttonStyle" class="btn btn-primary" >
-              <template v-slot:text >
+          <button @click="$emit('update-waifu', waifu._id)" :style="buttonStyle" class="btn btn-primary" >
                 <i class="fas fa-edit"></i>
-              </template>
-          </modal-button>
+          </button>
           <modal-button :openModal="openModal" @toggle-modal="toggleModal" :style="buttonStyle" class="btn btn-danger">
               <template v-slot:text >
                 <i class="fas fa-trash-alt"></i>
@@ -67,7 +65,7 @@ export default {
             handleDelete
         }
     },
-    emits: ['delete-waifu']
+    emits: ['delete-waifu', 'update-waifu']
     
 }
 </script>

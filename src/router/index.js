@@ -7,6 +7,8 @@ import GenreDetail from '../views/GenreDetail.vue';
 import Register from '../views/Register.vue';
 import LogIn from '../views/LogIn.vue';
 import Infor from '../views/Infor.vue';
+import Users from '../views/Users.vue';
+import Genre from '../views/Genre.vue';
 const routes = [
   {
     name: 'Home',
@@ -48,6 +50,16 @@ const routes = [
     name: 'Infor',
     path: '/user/infor',
     component: Infor
+  },
+  {
+    name: 'Users',
+    path: '/users',
+    component: Users
+  },
+  {
+    name: 'Genre',
+    path: '/genre',
+    component: Genre
   }
 ]
 

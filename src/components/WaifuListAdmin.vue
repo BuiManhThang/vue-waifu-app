@@ -10,11 +10,11 @@
                 </select>
             </div>
             <modal-button :openModal="openModal" @toggle-modal="toggleModal" class="btn btn-primary" text="Add">
-                <form-control @form-submit="handlSubmit" class="form-container" :form="form" />
+                <form-control :formData="dataWaifu" @form-submit="handlSubmit" class="form-container" :form="form" />
             </modal-button>
         </div>
         <ul class="waifu-list__list">
-            <waifu-list-admin-item v-for="waifu, index in waifuList" @delete-waifu="$emit('delete-waifu', waifu._id)" :key="waifu._id" :waifu="waifu" :index="index" />
+            <waifu-list-admin-item @update-waifu="handleUpdateWaifu" v-for="waifu, index in waifuList" @delete-waifu="$emit('delete-waifu', waifu._id)" :key="waifu._id" :waifu="waifu" :index="index" />
         </ul>
     </div>
 </template>
@@ -77,7 +77,6 @@ export default {
                     label: 'Thumbnail',
                     placeholder: '',
                     check: ['required'],
-                    required: true,
                     type: 'file',
                     error: null
                 },
@@ -86,16 +85,7 @@ export default {
                     label: 'Genre',
                     type: 'checkbox',
                     error: null,
-                    checkList: [
-                        {
-                            id: 'check-genre-tsundere',
-                            label: 'Tsundere'
-                        },
-                        {
-                            id: 'check-genre-test',
-                            label: 'Test'
-                        },
-                    ]
+                    checkList: []
                 },
                 {
                     id: 'add-waifu-anime',
@@ -103,26 +93,19 @@ export default {
                     name: 'anime',
                     type: 'select',
                     error: null,
-                    options: [
-                        {
-                            id: 'option-1',
-                            name: 'Option 1'
-                        },
-                        {
-                            id: 'option-2',
-                            name: 'Option 2'
-                        },
-                        {
-                            id: 'option-2',
-                            name: 'Option 2'
-                        },
-                    ]
+                    options: []
                 },
             ]
-        })
+        });
+
+        const dataWaifu = ref(null);
 
         const toggleModal = () => {
             openModal.value = !openModal.value;
+            dataWaifu.value = null;
+            form.inputs.forEach(input => {
+                input.error = null;
+            })
         }
 
         onMounted(() => {
@@ -154,7 +137,7 @@ export default {
             });
         });
 
-        const handlSubmit = (data) => {
+        const handlSubmit = (data, waifuId) => {
             const formData = new FormData();
             formData.append('name', data.name); 
             formData.append('birthday', data.birthday);
@@ -162,26 +145,82 @@ export default {
             formData.append('thumbnail', data.avata);
             formData.append('genre', data.genre);
             formData.append('anime', data.anime);
-            axios.post('http://localhost:3000/waifu/create', formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
-                withCredentials: true,
-            })
-            .then(() => {
-                openModal.value = !openModal.value;
-                emit('create-waifu');
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            if(!waifuId) {
+                axios.post('http://localhost:3000/waifu/create', formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    if(res.data.errors) {
+                        res.data.errors.forEach(err => {
+                            form.inputs.forEach(input => {
+                                if(err.param === input.name) {
+                                    input.error = err.msg;
+                                }
+                            })
+                        })
+                    } else {
+                        openModal.value = !openModal.value;
+                        emit('create-waifu');
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+            } else {
+                formData.append('_id', waifuId);
+                axios.post('http://localhost:3000/waifu/update', formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    if(res.data.errors) {
+                        res.data.errors.forEach(err => {
+                            form.inputs.forEach(input => {
+                                if(err.param === input.name) {
+                                    input.error = err.msg;
+                                }
+                            })
+                        })
+                    } else {
+                        openModal.value = !openModal.value;
+                        emit('create-waifu');
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+            }
+        };
+
+        const convertDate = (string) => {
+            const date = new Date(string);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const year = date.getFullYear();
+            return `${year}-${month < 10 ? '0'+ month : month}-${day < 10 ? '0' + day : day}`;
+        }
+
+        const handleUpdateWaifu = (id) => {
+            toggleModal();
+            const foundWaifu = props.waifuList.find((waifu) => {
+                return waifu._id === id;
+            });
+            foundWaifu.birthday = convertDate(foundWaifu.birthday);
+            dataWaifu.value = foundWaifu;
         }
 
         return {
             openModal,
             toggleModal,
             form,
-            handlSubmit
+            handlSubmit,
+            handleUpdateWaifu,
+            dataWaifu
         }
     },
     emits: ['update:sortBy', 'create-waifu', 'delete-waifu']

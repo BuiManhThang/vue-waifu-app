@@ -7,7 +7,7 @@
             <p class="infor-text"> <strong>Name: </strong> {{user.name}} </p>
             <p class="infor-text"> <strong>Email: </strong> {{user.email}} </p>
             <p class="infor-text"> <strong>Join date: </strong> {{userJoinDate}} </p>
-            <modal-button :openModal="openModal" @toggle-modal="openModal = !openModal" text="Edit Infor">
+            <modal-button :openModal="openModal" @toggle-modal="openModal = !openModal" text="Edit Infor" class="btn btn-primary">
                 <modal-edit-infor @cancel-modal="openModal = !openModal" />
             </modal-button>
         </div>

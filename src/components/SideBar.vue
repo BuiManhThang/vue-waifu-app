@@ -25,10 +25,6 @@ export default {
       return store.state.items;
     })
 
-    const user = computed(() => {
-      return store.state.user;
-    })
-
     watchEffect(() => {
       if(!store.state.user) {
         store.dispatch('fetchSideBarUser');
@@ -44,10 +40,10 @@ export default {
     })
 
     onMounted(() => {
-      if(!user)
+      if(!store.state.user)
         store.dispatch('fetchSideBarUser');
       else {
-        if(user.role === 'user')
+        if(store.state.user.role === 'user')
           store.dispatch('fetchSideBarUser')
         else
           store.commit('setSideBarAdmin')

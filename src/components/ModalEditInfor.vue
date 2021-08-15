@@ -1,6 +1,6 @@
 <template>
     <div class="modal-content">
-        <form-control @form-submit="formSubmitHandler" class='form-container' :form="form"/>
+        <form-control @form-submit="formSubmitHandler" class='form-container' :form="form" :formData="dataUserFormatted"/>
     </div>
 </template> 
 
@@ -39,7 +39,12 @@ export default {
             ]
         })
 
+
         const store = useStore();
+
+        const dataUserFormatted = reactive({
+            name: store.state.user.name
+        })
 
         const formSubmitHandler = (data) => {
             const formData = new FormData();
@@ -52,9 +57,19 @@ export default {
                 },
                 withCredentials: true,
             })
-            .then(() => {
-                store.dispatch('fetchUser');
-                emit('cancel-modal');
+            .then((res) => {
+                if(res.data.errors) {
+                    res.data.errors.forEach(error => {
+                        form.inputs.forEach(input => {
+                            if(input.name === error.param) {
+                            input.error = error.msg;
+                            }
+                        })
+                    })
+                } else {
+                    store.dispatch('fetchUser');
+                    emit('cancel-modal');
+                }
             })
             .catch((err) => {
                 console.log(err);
@@ -63,7 +78,8 @@ export default {
 
         return {
             form,
-            formSubmitHandler
+            formSubmitHandler,
+            dataUserFormatted
         }
     },
     emits: ['cancel-modal']

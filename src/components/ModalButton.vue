@@ -40,9 +40,6 @@ export default {
 </script>
 
 <style scoped>
-    .edit-infor {
-        width: max-content;
-    }
     .my-modal {
         position: fixed;
         top: 0;

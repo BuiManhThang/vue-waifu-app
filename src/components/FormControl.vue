@@ -31,6 +31,7 @@ import { ref } from '@vue/reactivity';
 export default {
     props: {
         form: Object,
+        formData: {type: Object, default: null}
     },
     name: 'FormControl',
     setup(props, {emit}) {
@@ -39,7 +40,7 @@ export default {
         const avata = ref(null);
         
         props.form.inputs.forEach(input => {
-            data.value[input.name] = null;
+            data.value[input.name] = '';
             if(input.type === 'checkbox') {
                 data.value[input.name] = [];
             }
@@ -49,13 +50,35 @@ export default {
             errors.value[input.name] = null;
         })
 
+        if(props.formData) {
+            props.form.inputs.forEach(input => {
+                data.value[input.name] = props.formData[input.name];
+                if(input.type === 'checkbox') {
+                    if(input.name === "genre") {
+                        data.value[input.name] = props.formData[input.name];
+                    }
+                }
+                errors.value[input.name] = null;
+            })
+        }
+
         const onSubmit = () => {
             if(data.value.avata) {
                 data.value.avata = avata.value.files[0];
             }
-            emit('form-submit', data.value);
+            if(props.formData) {
+                emit('form-submit', data.value, props.formData._id);
+            } else {
+                emit('form-submit', data.value);
+            }
             props.form.inputs.forEach(input => {
                 data.value[input.name] = null;
+                if(input.type === 'checkbox') {
+                    data.value[input.name] = [];
+                }
+                if(input.type === 'select') {
+                    data.value[input.name] = input.options[0].id;
+                }
                 errors.value[input.name] = null;
             })
         }
